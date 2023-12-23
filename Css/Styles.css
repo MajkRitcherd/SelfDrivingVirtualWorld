@@ -1,13 +1,13 @@
 body {
-    background-color: rgb(67, 67, 67);
-    text-align: center;
+  background-color: rgb(128, 128, 128);
+  text-align: center;
 }
 
 #title {
-    color: aliceblue;
-    font-family: Arial, Helvetica, sans-serif;
+  color: aliceblue;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-#virtual-world {
-    background-color: aquamarine;
+#virtualWorld {
+  background-color: #326F32;
 }
