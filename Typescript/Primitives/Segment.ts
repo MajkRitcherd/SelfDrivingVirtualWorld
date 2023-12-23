@@ -6,10 +6,10 @@ import Shape from "./Shape.js";
  */
 export default class Segment extends Shape {
   /** Start point of a segment. */
-  private startPoint: Point;
+  public startPoint: Point;
 
   /** End point of a segment. */
-  private endPoint: Point;
+  public endPoint: Point;
 
   constructor(startPoint: Point, endPoint: Point, colour: string = '#323232') {
     super(colour);
@@ -19,7 +19,7 @@ export default class Segment extends Shape {
   }
 
   /** @inheritdoc */
-  draw(ctx2D: CanvasRenderingContext2D, width: number = 2): void {
+  public draw(ctx2D: CanvasRenderingContext2D, width: number = 2): void {
     super.draw(ctx2D);
 
     ctx2D.beginPath();
@@ -28,5 +28,23 @@ export default class Segment extends Shape {
     ctx2D.moveTo(this.startPoint.coordinate.x, this.startPoint.coordinate.y);
     ctx2D.lineTo(this.endPoint.coordinate.x, this.endPoint.coordinate.y);
     ctx2D.stroke();
+  }
+
+  /**
+   * Check if points are equal.
+   * @param point Point to compare to.
+   * @returns True, if they are equal, otherwise false.
+   */
+  public isEqual(segment: Segment): boolean {
+    return this.includes(segment.startPoint) && this.includes(segment.endPoint);
+  }
+
+  /**
+   * Check if segment includes point (either in startPoint or endPoint).
+   * @param point Point to check.
+   * @returns True, if it includes, otherwise false.
+   */
+  public includes(point: Point): boolean {
+    return this.startPoint.isEqual(point) || this.endPoint.isEqual(point);
   }
 }
