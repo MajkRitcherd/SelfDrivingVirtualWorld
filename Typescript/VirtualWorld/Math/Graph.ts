@@ -1,5 +1,5 @@
 import IDraw from '../Interfaces/IDraw2D.js'
-import { Logger, MessageType } from '../Logger.js';
+import { Logger, MessageType } from '../../Logger.js';
 import Point from '../Primitives/Point.js';
 import Segment from '../Primitives/Segment.js';
 
@@ -13,6 +13,7 @@ export default class Graph implements IDraw {
   /** Edges of a graph. */
   public edges: Array<Segment>;
 
+  /** Console logger. */
   private logger: Logger;
 
   constructor(vertices: Array<Point>, edges: Array<Segment>) {
@@ -24,13 +25,9 @@ export default class Graph implements IDraw {
   /** @inheritdoc */
   public draw(ctx2D: CanvasRenderingContext2D): void {
     // Draw firstly edges, so the points are on top of them
-    this.edges.forEach(edge => {
-      edge.draw(ctx2D);
-    });
+    this.edges.forEach(edge => edge.draw(ctx2D));
 
-    this.vertices.forEach(vert => {
-      vert.draw(ctx2D);
-    });
+    this.vertices.forEach(vert => vert.draw(ctx2D));
   }
 
   /**

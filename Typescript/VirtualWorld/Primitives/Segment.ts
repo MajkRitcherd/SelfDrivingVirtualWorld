@@ -2,6 +2,17 @@ import Point from "./Point.js";
 import Shape from "./Shape.js";
 
 /**
+ * Represents segment properties.
+ */
+interface SegmentProperties {
+  /** Width of a segment */
+  width?: number;
+
+  /** Dash line property. */
+  dash?: Array<number>;
+}
+
+/**
  * Represents segment (or edge in case of Graph).
  */
 export default class Segment extends Shape {
@@ -19,22 +30,26 @@ export default class Segment extends Shape {
   }
 
   /** @inheritdoc */
-  public draw(ctx2D: CanvasRenderingContext2D, width: number = 2): void {
+  public draw(ctx2D: CanvasRenderingContext2D, segmentProperties: SegmentProperties = { width: 2, dash: [] }): void {
     super.draw(ctx2D);
 
     ctx2D.beginPath();
-    ctx2D.lineWidth = width;
+
+    if (segmentProperties.width !== undefined) {
+      ctx2D.lineWidth = segmentProperties.width;
+    }
+
+    if (segmentProperties.dash !== undefined) {
+      ctx2D.setLineDash(segmentProperties.dash);
+    }
     ctx2D.strokeStyle = this.colour;
     ctx2D.moveTo(this.startPoint.coordinate.x, this.startPoint.coordinate.y);
     ctx2D.lineTo(this.endPoint.coordinate.x, this.endPoint.coordinate.y);
     ctx2D.stroke();
+    ctx2D.setLineDash([]);
   }
 
-  /**
-   * Check if points are equal.
-   * @param point Point to compare to.
-   * @returns True, if they are equal, otherwise false.
-   */
+  /** @inheritdoc */
   public isEqual(segment: Segment): boolean {
     return this.includes(segment.startPoint) && this.includes(segment.endPoint);
   }

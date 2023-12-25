@@ -15,4 +15,11 @@ export default abstract class Shape implements IDraw2D {
   draw(ctx2D: CanvasRenderingContext2D): void {
     ctx2D.fillStyle = this.colour;
   }
+
+  /**
+   * Check if shapes are equal.
+   * @param shape Shape to compare to.
+   * @returns True, if they are equal, otherwise false.
+   */
+  public abstract isEqual(shape: Shape): boolean;
 }
