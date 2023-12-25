@@ -22,6 +22,24 @@ export default class Graph implements IDraw {
     this.vertices = vertices;
   }
 
+  public static load(graphInfo: Graph): Graph {
+    const vertices = graphInfo.vertices.map(vertex => new Point(vertex.coordinate.x, vertex.coordinate.y));
+    const edges = graphInfo.edges.map(edge => new Segment(
+      vertices.find(vertex => vertex.isEqual(edge.startPoint)) as Point,
+      vertices.find(vertex => vertex.isEqual(edge.endPoint)) as Point
+    ));
+
+    return new Graph(vertices, edges);
+  }
+
+  /**
+   * Disposes the graph.
+   */
+  public dispose(): void {
+    this.edges = [];
+    this.vertices = [];
+  }
+
   /** @inheritdoc */
   public draw(ctx2D: CanvasRenderingContext2D): void {
     // Draw firstly edges, so the points are on top of them

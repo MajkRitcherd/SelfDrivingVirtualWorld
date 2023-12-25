@@ -6,6 +6,11 @@ import Segment from "./Primitives/Segment.js";
 
 
 const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+const disposeButton: HTMLButtonElement = document.getElementById('disposeButton') as HTMLButtonElement;
+const saveButton: HTMLButtonElement = document.getElementById('saveButton') as HTMLButtonElement;
+
+disposeButton.addEventListener('click', handleDispose);
+saveButton.addEventListener('click', handleSave);
 
 const vert1 = new Point(200, 200);
 const vert2 = new Point(500, 200);
@@ -21,15 +26,37 @@ const edges = [
   new Segment(vert3, vert4),
 ]
 
-const graph = new Graph(graphVertices, edges); // For debugging
-// const graph = new Graph();
+//const graph = new Graph(graphVertices, edges); // For debugging
+const graphInfo = sessionStorage.getItem('graphInfo');
+const graph = graphInfo 
+  ? Graph.load(JSON.parse(graphInfo))
+  : new Graph(graphVertices, edges);
 const viewport = new Viewport(canvas);
 const graphEditor = new GraphEditor(viewport, graph);
 
+/**
+ * Renders the canvas.
+ */
 function animate() {
   viewport.display();
   graphEditor.display();
   requestAnimationFrame(animate);
+}
+
+/**
+ * Handles click event (occurs when clicked on dispose button).
+ * @param event Mouse event.
+ */
+function handleDispose(event: MouseEvent) {
+  graphEditor.dispose();
+}
+
+/**
+ * Handles click event (occurs when clicked on save button). 
+ * @param event Mouse event.
+ */
+function handleSave(event: MouseEvent) {
+  sessionStorage.setItem('graphInfo', JSON.stringify(graph));
 }
 
 animate();

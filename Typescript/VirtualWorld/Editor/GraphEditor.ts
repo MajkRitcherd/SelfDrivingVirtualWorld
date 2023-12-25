@@ -60,6 +60,15 @@ export default class GraphEditor extends AbstractCanvasListener {
     }
   }
 
+  /**
+   * Disposes the graph editor.
+   */
+  public dispose(): void {
+    this.graph.dispose();
+    this.selectedPoint = undefined;
+    this.hoveredPoint = undefined;
+  }
+
   /** @inheritdoc */
   protected addEventListeners(): void {
     super.addEventListeners();
