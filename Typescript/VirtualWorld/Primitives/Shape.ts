@@ -12,7 +12,7 @@ export default abstract class Shape implements IDraw2D {
   }
 
   /** @inheritdoc */
-  draw(ctx2D: CanvasRenderingContext2D): void {
+  public draw(ctx2D: CanvasRenderingContext2D): void {
     ctx2D.fillStyle = this.colour;
   }
 

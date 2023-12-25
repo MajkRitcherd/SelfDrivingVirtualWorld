@@ -1,8 +1,8 @@
+import AbstractCanvasListener from "./AbstractCanvasListener.js";
 import Graph from "../Math/Graph.js";
 import { getNearestVertex } from "../Math/Utils.js";
 import Point from "../Primitives/Point.js";
 import Segment from "../Primitives/Segment.js";
-import AbstractCanvasListener from "./AbstractCanvasListener.js";
 import Viewport from "./Viewport.js";
 
 /**
@@ -12,20 +12,20 @@ export default class GraphEditor extends AbstractCanvasListener {
   /** Graph model. */
   private graph: Graph;
 
-  /** Viewport. */
-  private viewport: Viewport;
+  /** Whether or not should drag vertex. */
+  private isDragging: boolean;
+  
+  /** Currently hovered point. */
+  private hoveredPoint: Point | undefined;
+  
+  /** Mouse point. */
+  private mousePoint: Point | undefined;
 
   /** Currently selected point. */
   private selectedPoint: Point | undefined;
-
-  /** Currently hovered point. */
-  private hoveredPoint: Point | undefined;
-
-  /** Whether or not should drag vertex. */
-  private isDragging: boolean;
-
-  /** Mouse point. */
-  private mousePoint: Point | undefined;
+  
+  /** Viewport. */
+  private viewport: Viewport;
 
   constructor(viewport: Viewport, graph: Graph) {
     super(viewport.canvas);
@@ -64,14 +64,33 @@ export default class GraphEditor extends AbstractCanvasListener {
   protected addEventListeners(): void {
     super.addEventListeners();
 
-    // Highlight vertex or move it
-    this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-
     // Do not show context menu on our canvas
     this.canvas.addEventListener('contextmenu', event => event.preventDefault());
+  }
 
-    // Stop dragging on mouse up
-    this.canvas.addEventListener('mouseup', _ => this.isDragging = false);
+  /**
+   * Removes vertex from graph.
+   * @param vertex Vertex to remove.
+   */
+  private removeVertex(vertex: Point) {
+    this.graph.removeVertex(vertex);
+    this.hoveredPoint = undefined;
+
+    if (this.selectedPoint === vertex) {
+      this.selectedPoint = undefined;
+    }
+  }
+
+  /**
+   * Selects a new point.
+   * @param pointToSelect Point to select.
+   */
+  private selectPoint(pointToSelect: Point): void {
+    if (this.selectedPoint) {
+      this.graph.tryAddEdge(new Segment(this.selectedPoint, pointToSelect));
+    }
+
+    this.selectedPoint = pointToSelect;
   }
 
   /**
@@ -93,35 +112,10 @@ export default class GraphEditor extends AbstractCanvasListener {
     this.hoveredPoint = newVertex;
   }
 
-  /**
-   * Selects a new point.
-   * @param pointToSelect Point to select.
-   */
-  private selectPoint(pointToSelect: Point): void {
-    if (this.selectedPoint) {
-      this.graph.tryAddEdge(new Segment(this.selectedPoint, pointToSelect));
-    }
-
-    this.selectedPoint = pointToSelect;
-  }
-
-  /**
-   * Removes vertex from graph.
-   * @param vertex Vertex to remove.
-   */
-  private removeVertex(vertex: Point) {
-    this.graph.removeVertex(vertex);
-    this.hoveredPoint = undefined;
-
-    if (this.selectedPoint === vertex) {
-      this.selectedPoint = undefined;
-    }
-  }
-
   //#region Event handlers
 
   /** @inheritdoc */
-  protected handleMouseDown(event: MouseEvent) {
+  protected handleMouseDown(event: MouseEvent): void {
     const leftButton: number = 0;
     const rightButton: number = 2;
 
@@ -139,20 +133,22 @@ export default class GraphEditor extends AbstractCanvasListener {
     }
   }
 
-  /**
-   * Handles graph editor's mouse down event.
-   * @param event Mouse event.
-   */
-  private handleMouseMove(event: MouseEvent) {
-    this.mousePoint = this.viewport.getMousePoint(event);
+  /** @inheritdoc */
+  protected handleMouseMove(event: MouseEvent): void {
+    this.mousePoint = this.viewport.getMousePoint(event, true);
     const threshold = this.isDragging ? Number.MAX_SAFE_INTEGER : 10;
 
-    this.hoveredPoint = getNearestVertex(this.mousePoint, this.graph.vertices, threshold);
+    this.hoveredPoint = getNearestVertex(this.mousePoint, this.graph.vertices, threshold * this.viewport.properties.zoom);
 
     if (this.hoveredPoint && this.isDragging) {
       this.hoveredPoint.coordinate.x = this.mousePoint.coordinate.x;
       this.hoveredPoint.coordinate.y = this.mousePoint.coordinate.y;
     }
+  }
+
+  /** @inheritdoc */
+  protected handleMouseUp(mouseEvent: MouseEvent): void {
+    this.isDragging = false;
   }
 
   //#endregion

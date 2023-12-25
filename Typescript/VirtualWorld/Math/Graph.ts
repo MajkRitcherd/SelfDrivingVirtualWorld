@@ -7,19 +7,19 @@ import Segment from '../Primitives/Segment.js';
  * Represents undirected simple graph.
  */
 export default class Graph implements IDraw {
+  /** Edges of a graph. */
+  public edges: Array<Segment>;
+  
+  /** Console logger. */
+  private logger: Logger;
+  
   /** Vertices of a graph. */
   public vertices: Array<Point>;
 
-  /** Edges of a graph. */
-  public edges: Array<Segment>;
-
-  /** Console logger. */
-  private logger: Logger;
-
-  constructor(vertices: Array<Point>, edges: Array<Segment>) {
-    this.vertices = vertices;
+  constructor(vertices: Array<Point> = [], edges: Array<Segment> = []) {
     this.edges = edges;
     this.logger = new Logger();
+    this.vertices = vertices;
   }
 
   /** @inheritdoc */
@@ -28,22 +28,6 @@ export default class Graph implements IDraw {
     this.edges.forEach(edge => edge.draw(ctx2D));
 
     this.vertices.forEach(vert => vert.draw(ctx2D));
-  }
-
-  /**
-   * Tries to add edge to the graph's edges.
-   * @param edge Edge to add.
-   * @returns True, if edge was added, otherwise false.
-   */
-  public tryAddEdge(edge: Segment): boolean {
-    if (!edge.startPoint.isEqual(edge.endPoint) && !this.containsEdge(edge)) {
-      this.addEdge(edge);
-      this.logger.log('Edge successfuly added.', MessageType.Normal);
-      return true;
-    }
-
-    this.logger.log('Adding edge failed!\Edge already exists.', MessageType.Error);
-    return false;
   }
 
   /**
@@ -57,22 +41,6 @@ export default class Graph implements IDraw {
     }
 
     this.edges.splice(this.edges.indexOf(edge), 1);
-  }
-  
-  /**
-   * Tries to add vertex to the graph's vertices.
-   * @param vertex Vertex to add.
-   * @returns True, if vertex was added, otherwise false.
-   */
-  public tryAddVertex(vertex: Point): boolean {
-    if (!this.containsVertex(vertex)) {
-      this.addVertex(vertex);
-      this.logger.log('Vertex successfuly added.', MessageType.Normal);
-      return true;
-    }
-
-    this.logger.log('Adding vertex failed!\nVertex already exists.', MessageType.Error);
-    return false;
   }
 
   /**
@@ -94,11 +62,51 @@ export default class Graph implements IDraw {
   }
 
   /**
+   * Tries to add edge to the graph's edges.
+   * @param edge Edge to add.
+   * @returns True, if edge was added, otherwise false.
+   */
+  public tryAddEdge(edge: Segment): boolean {
+    if (!edge.startPoint.isEqual(edge.endPoint) && !this.containsEdge(edge)) {
+      this.addEdge(edge);
+      this.logger.log('Edge successfuly added.', MessageType.Normal);
+      return true;
+    }
+
+    this.logger.log('Adding edge failed!\Edge already exists.', MessageType.Error);
+    return false;
+  }
+  
+  /**
+   * Tries to add vertex to the graph's vertices.
+   * @param vertex Vertex to add.
+   * @returns True, if vertex was added, otherwise false.
+   */
+  public tryAddVertex(vertex: Point): boolean {
+    if (!this.containsVertex(vertex)) {
+      this.addVertex(vertex);
+      this.logger.log('Vertex successfuly added.', MessageType.Normal);
+      return true;
+    }
+
+    this.logger.log('Adding vertex failed!\nVertex already exists.', MessageType.Error);
+    return false;
+  }
+
+  /**
    * Adds edge to the edges.
    * @param edge Edge to add.
    */
   private addEdge(edge: Segment): void {
     this.edges.push(edge);
+  }
+
+  /**
+   * Adds vertex to the graph's vertices.
+   * @param vertex Vertex to add.
+   */
+  private addVertex(vertex: Point): void {
+    this.vertices.push(vertex);
   }
 
   /**
@@ -108,6 +116,15 @@ export default class Graph implements IDraw {
    */
   private containsEdge(edge: Segment): Segment | undefined {
     return this.edges.find((e) => e.isEqual(edge));
+  }
+
+  /**
+   * Check whether vertex already exists in the graph.
+   * @param vertex Vertex to add.
+   * @returns Vertex, if found, otherwise undefined.
+   */
+  private containsVertex(vertex: Point): Point | undefined {
+    return this.vertices.find((vert) => vert.isEqual(vertex));
   }
 
   /**
@@ -125,22 +142,5 @@ export default class Graph implements IDraw {
     }
 
     return edges;
-  }
-  
-  /**
-   * Adds vertex to the graph's vertices.
-   * @param vertex Vertex to add.
-   */
-  private addVertex(vertex: Point): void {
-    this.vertices.push(vertex);
-  }
-
-  /**
-   * Check whether vertex already exists in the graph.
-   * @param vertex Vertex to add.
-   * @returns Vertex, if found, otherwise undefined.
-   */
-  private containsVertex(vertex: Point): Point | undefined {
-    return this.vertices.find((vert) => vert.isEqual(vertex));
   }
 }

@@ -1,4 +1,14 @@
-import Point from "../Primitives/Point";
+import Point from "../Primitives/Point.js";
+
+/**
+ * Creates a new point by adding 2 points together.
+ * @param p1 First point.
+ * @param p2 Second point.
+ * @returns New point.
+ */
+export function add(p1: Point, p2: Point): Point {
+  return new Point(p1.coordinate.x + p2.coordinate.x, p1.coordinate.y + p2.coordinate.y);
+}
 
 /**
  * Computes distance between 2 points.
@@ -32,4 +42,24 @@ export function getNearestVertex(possiblePoint: Point, vertices: Array<Point>, t
   }
 
   return nearestVertex;
+}
+
+/**
+ * Scales the point by scaler constant.
+ * @param point Point to scale.
+ * @param scaler Scaler constant.
+ * @returns Scaled point.
+ */
+export function scale(point: Point, scaler: number): Point {
+  return new Point(point.coordinate.x * scaler, point.coordinate.y * scaler);
+}
+
+/**
+ * Creates a new point by subtracting 2 points together.
+ * @param p1 First point.
+ * @param p2 Second point.
+ * @returns New point.
+ */
+export function subtract(p1: Point, p2: Point): Point {
+  return new Point(p1.coordinate.x - p2.coordinate.x, p1.coordinate.y - p2.coordinate.y)
 }

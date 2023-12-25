@@ -5,14 +5,14 @@ import Shape from "./Shape.js";
  * Represents point properties.
  */
 interface PointProperties {
-  /** Size of a point. */
-  size?: number;
-
   /** Whether or not to outline the point. */
   fillSelected?: boolean;
-
+  
   /** Whether or not to highlight the point. */
   highlight?: boolean;
+  
+  /** Size of a point. */
+  size?: number;
 }
 
 /**

@@ -2,11 +2,11 @@
  * Abstract canvas listener class.
  */
 export default abstract class AbstractCanvasListener {
-  /** Canvas 2D rendering context. */
-  protected ctx2D: CanvasRenderingContext2D;
-
   /** Canvas. */
   public canvas: HTMLCanvasElement;
+
+  /** Canvas 2D rendering context. */
+  protected ctx2D: CanvasRenderingContext2D;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -21,6 +21,8 @@ export default abstract class AbstractCanvasListener {
    */
   protected addEventListeners(): void {
     this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
+    this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
   };
 
   /**
@@ -28,4 +30,16 @@ export default abstract class AbstractCanvasListener {
    * @param mouseEvent Mouse event.
    */
   protected abstract handleMouseDown(mouseEvent: MouseEvent): void;
+
+  /**
+   * Handles mouse move event.
+   * @param mouseEvent Mouse event.
+   */
+  protected abstract handleMouseMove(mouseEvent: MouseEvent): void;
+
+  /**
+   * Handles mouse up event.
+   * @param mouseEvent Mouse event.
+   */
+  protected abstract handleMouseUp(mouseEvent: MouseEvent): void;
 }

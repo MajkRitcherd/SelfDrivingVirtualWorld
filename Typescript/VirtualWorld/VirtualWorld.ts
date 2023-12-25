@@ -5,11 +5,7 @@ import Point from "./Primitives/Point.js";
 import Segment from "./Primitives/Segment.js";
 
 
-let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
-
-let ctx2D = canvas.getContext('2d') as CanvasRenderingContext2D;
-ctx2D.canvas.width = 600;
-ctx2D.canvas.height = 600;
+const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
 
 const vert1 = new Point(200, 200);
 const vert2 = new Point(500, 200);
@@ -25,16 +21,14 @@ const edges = [
   new Segment(vert3, vert4),
 ]
 
-const graph = new Graph(graphVertices, edges);
+const graph = new Graph(graphVertices, edges); // For debugging
+// const graph = new Graph();
 const viewport = new Viewport(canvas);
 const graphEditor = new GraphEditor(viewport, graph);
 
 function animate() {
-  ctx2D.clearRect(0, 0, canvas.width, canvas.height);
-  ctx2D.save();
-  ctx2D.scale(1 / viewport.properties.zoom, 1 / viewport.properties.zoom);
+  viewport.display();
   graphEditor.display();
-  ctx2D.restore();
   requestAnimationFrame(animate);
 }
 
