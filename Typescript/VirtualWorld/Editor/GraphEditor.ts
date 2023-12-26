@@ -44,18 +44,21 @@ export default class GraphEditor extends AbstractCanvasListener {
     this.graph.draw(this.ctx2D);
     
     if (this.hoveredPoint !== undefined && this.selectedPoint?.isEqual(this.hoveredPoint)) {
-      this.hoveredPoint.draw(this.ctx2D, { fillSelected: true, highlight: true });
+      this.hoveredPoint.setShapeDrawProperties({ isFillSelected: true, isHighlight: true});
+      this.hoveredPoint.draw(this.ctx2D);
     }
     else {
       if (this.selectedPoint) {
         const segmentPoint = this.hoveredPoint ? this.hoveredPoint : this.mousePoint!;
           
         new Segment(this.selectedPoint, segmentPoint).draw(this.ctx2D, { dash: [3, 3] });
-        this.selectedPoint.draw(this.ctx2D, { fillSelected: true });
+        this.selectedPoint.setShapeDrawProperties({ isFillSelected: true });
+        this.selectedPoint.draw(this.ctx2D);
       }
       
       if (this.hoveredPoint) {
-        this.hoveredPoint.draw(this.ctx2D, { highlight: true });
+        this.hoveredPoint.setShapeDrawProperties({ isHighlight: true });
+        this.hoveredPoint.draw(this.ctx2D);
       }
     }
   }

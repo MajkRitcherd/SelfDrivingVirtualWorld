@@ -1,3 +1,4 @@
+import IIntersection from "../Interfaces/IIntersection.js";
 import Point from "../Primitives/Point.js";
 
 /**
@@ -21,6 +22,18 @@ export function angle(point: Point): number {
 }
 
 /**
+ * Gets the middle point of a segment.
+ * @param point1 Start point of a segment.
+ * @param point2 End point of a segment.
+ * @returns Middle point of a segment.
+ */
+export function average(point1: Point, point2: Point): Point {
+  return new Point(
+    (point1.coordinate.x + point2.coordinate.x) / 2,
+    (point1.coordinate.y + point2.coordinate.y) / 2);
+}
+
+/**
  * Computes distance between 2 points.
  * @param p1 Point.
  * @param p2 Point.
@@ -28,6 +41,38 @@ export function angle(point: Point): number {
  */
 function getDistance(p1: Point, p2: Point): number {
   return Math.hypot(p1.coordinate.x - p2.coordinate.x, p1.coordinate.y - p2.coordinate.y); 
+}
+
+/**
+ * Gets intersection point.
+ * @param a First point of polygon.
+ * @param b Second point of polygon.
+ * @param c Third point of polygon.
+ * @param d Fourth point of polygon.
+ * @returns Intersection.
+ */
+export function getIntersection(a: Point, b: Point, c: Point, d: Point): IIntersection | null {
+  const tTop: number = ((d.coordinate.x - c.coordinate.x) * (a.coordinate.y - c.coordinate.y)) -
+    ((d.coordinate.y - c.coordinate.y) * (a.coordinate.x - c.coordinate.x));
+  const uTop: number = ((c.coordinate.y - a.coordinate.y) * (a.coordinate.x - b.coordinate.x)) -
+    ((c.coordinate.x - a.coordinate.x) * (a.coordinate.y - b.coordinate.y));
+  const bottom: number = ((d.coordinate.y - c.coordinate.y) * (b.coordinate.x - a.coordinate.x) -
+    ((d.coordinate.x - c.coordinate.x) * (b.coordinate.y - a.coordinate.y)));
+
+  if (bottom != 0) {
+    const t = tTop / bottom;
+    const u = uTop / bottom;
+
+    if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+      return {
+        x: lerp(a.coordinate.x, b.coordinate.x, t),
+        y: lerp(a.coordinate.y, b.coordinate.y, t),
+        offset: t,
+      };
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -52,6 +97,26 @@ export function getNearestVertex(possiblePoint: Point, vertices: Array<Point>, t
   }
 
   return nearestVertex;
+}
+
+/**
+ * Gets random colour.
+ * @returns HSL colour representation.
+ */
+export function getRandomColour(): string {
+  const hue = 290 + Math.random() * 260;
+  return `hsl(${hue}, 100%, 60%)`;
+}
+
+/**
+ * Computes linear interpolation.
+ * @param a Number.
+ * @param b Number.
+ * @param t Number.
+ * @returns Linear interpolation.
+ */
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
 }
 
 /**

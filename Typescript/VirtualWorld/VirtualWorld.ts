@@ -1,9 +1,9 @@
 import GraphEditor from "./Editor/GraphEditor.js";
-import Envelope from "./Primitives/Envelope.js";
 import Viewport from "./Editor/Viewport.js";
 import Graph from "./Math/Graph.js";
 import Point from "./Primitives/Point.js";
 import Segment from "./Primitives/Segment.js";
+import World from "./World/World.js";
 
 
 const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
@@ -32,6 +32,7 @@ const graphInfo = sessionStorage.getItem('graphInfo');
 const graph = graphInfo 
   ? Graph.load(JSON.parse(graphInfo))
   : new Graph(graphVertices, edges);
+const world = new World(graph); 
 const viewport = new Viewport(canvas);
 const graphEditor = new GraphEditor(viewport, graph);
 
@@ -39,9 +40,13 @@ const graphEditor = new GraphEditor(viewport, graph);
  * Renders the canvas.
  */
 function animate() {
+  const ctx2D = viewport.canvas.getContext('2d') as CanvasRenderingContext2D;
+
   viewport.display();
+  world.generate();
+  world.draw(ctx2D);
+  ctx2D.globalAlpha = 0.2;
   graphEditor.display();
-  new Envelope(graph.edges[0], 80).draw(viewport.canvas.getContext('2d') as CanvasRenderingContext2D);
   requestAnimationFrame(animate);
 }
 

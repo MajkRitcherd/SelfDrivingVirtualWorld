@@ -43,7 +43,10 @@ export default class Graph implements IDraw {
   /** @inheritdoc */
   public draw(ctx2D: CanvasRenderingContext2D): void {
     // Draw firstly edges, so the points are on top of them
-    this.edges.forEach(edge => edge.draw(ctx2D));
+    this.edges.forEach(edge => {
+      edge.props.colour = 'black';
+      edge.draw(ctx2D);
+    });
 
     this.vertices.forEach(vert => vert.draw(ctx2D));
   }

@@ -1,7 +1,7 @@
 import IDraw2D from "../Interfaces/IDraw2D.js";
 import { angle, subtract, translate } from "../Math/Utils.js";
 import Point from "./Point.js";
-import Polygon from "./Polygon.js";
+import { Polygon, PolygonProperties } from "./Polygon.js";
 import Segment from "./Segment.js";
 
 /**
@@ -9,7 +9,7 @@ import Segment from "./Segment.js";
  */
 export default class Envelope implements IDraw2D {
   /** Polygon around the edge. */
-  private edgePolygon: Polygon;
+  public edgePolygon: Polygon;
 
   /** Skeleton of an edge. */
   private edgeSkeleton: [Point, Point];
@@ -21,7 +21,11 @@ export default class Envelope implements IDraw2D {
 
   /** @inheritdoc */
   draw(ctx2D: CanvasRenderingContext2D): void {
-    this.edgePolygon.draw(ctx2D);
+    this.edgePolygon.draw(ctx2D, this.edgePolygon.props);
+  }
+
+  public setPolygonProperties(polygonProperties: PolygonProperties): void {
+    this.edgePolygon.props = polygonProperties;
   }
 
   /**

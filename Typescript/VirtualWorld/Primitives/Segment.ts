@@ -1,10 +1,10 @@
 import Point from "./Point.js";
-import Shape from "./Shape.js";
+import Shape, { ShapeProperties } from "./Shape.js";
 
 /**
  * Represents segment properties.
  */
-interface SegmentProperties {
+export interface SegmentProperties extends ShapeProperties {
   /** Dash line property. */
   dash?: Array<number>;
   
@@ -16,6 +16,9 @@ interface SegmentProperties {
  * Represents segment (or edge in case of Graph).
  */
 export default class Segment extends Shape {
+  protected readonly defaultDash: Array<number> = [];
+  protected readonly defaultWidth: number = 2;
+
   /** End point of a segment. */
   public endPoint: Point;
   
@@ -23,14 +26,14 @@ export default class Segment extends Shape {
   public startPoint: Point;
 
   constructor(startPoint: Point, endPoint: Point, colour: string = '#323232') {
-    super(colour);
+    super();
 
     this.startPoint = startPoint;
     this.endPoint = endPoint
   }
 
   /** @inheritdoc */
-  public draw(ctx2D: CanvasRenderingContext2D, segmentProperties: SegmentProperties = { width: 2, dash: [] }): void {
+  public draw(ctx2D: CanvasRenderingContext2D, segmentProperties: SegmentProperties = { dash: this.defaultDash, width: this.defaultWidth }): void {
     super.draw(ctx2D);
 
     ctx2D.beginPath();
@@ -43,7 +46,7 @@ export default class Segment extends Shape {
       ctx2D.setLineDash(segmentProperties.dash);
     }
 
-    ctx2D.strokeStyle = this.colour;
+    ctx2D.strokeStyle = this.props.colour ?? 'black';
     ctx2D.moveTo(this.startPoint.coordinate.x, this.startPoint.coordinate.y);
     ctx2D.lineTo(this.endPoint.coordinate.x, this.endPoint.coordinate.y);
     ctx2D.stroke();
@@ -62,5 +65,25 @@ export default class Segment extends Shape {
   /** @inheritdoc */
   public isEqual(segment: Segment): boolean {
     return this.includes(segment.startPoint) && this.includes(segment.endPoint);
+  }
+
+  /** @inheritdoc */
+  public setShapeDrawProperties(props: SegmentProperties): void {
+    let properties = this.props as SegmentProperties;
+
+    properties.colour = props.colour ?? this.defaultColour;
+    properties.dash = props.dash ?? this.defaultDash;
+    properties.width = props.width ?? this.defaultWidth;
+
+    this.props = properties;
+  }
+
+  /** @inheritdoc */
+  protected getDefaultShapeProperties(): SegmentProperties {
+    return {
+      colour: this.defaultColour,
+      dash: this.defaultDash,
+      width: this.defaultWidth
+    };
   }
 }

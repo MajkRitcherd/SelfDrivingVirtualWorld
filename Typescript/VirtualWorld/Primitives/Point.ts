@@ -1,15 +1,15 @@
 import ICoordinate from "../Interfaces/ICoordinate.js";
-import Shape from "./Shape.js";
+import Shape, { ShapeProperties } from "./Shape.js";
 
 /**
  * Represents point properties.
  */
-interface PointProperties {
+interface PointProperties extends ShapeProperties {
   /** Whether or not to outline the point. */
-  fillSelected?: boolean;
+  isFillSelected?: boolean;
   
   /** Whether or not to highlight the point. */
-  highlight?: boolean;
+  isHighlight?: boolean;
   
   /** Size of a point. */
   size?: number;
@@ -19,11 +19,15 @@ interface PointProperties {
  * Represents Point.
  */
 export default class Point extends Shape {
+  protected readonly defaultIsFillSelected = false;
+  protected readonly defaultIsHighlight = false;
+  protected readonly defaultSize = 18;
+
   /** Coordinates of a Point. */
   coordinate: ICoordinate;
 
-  constructor(xPoint: number, yPoint: number, colour: string = 'black') {
-    super(colour);
+  constructor(xPoint: number, yPoint: number) {
+    super();
 
     this.coordinate = {
       x: xPoint,
@@ -32,18 +36,19 @@ export default class Point extends Shape {
   }
 
   /** @inheritdoc */
-  public draw(ctx2D: CanvasRenderingContext2D, pointProperties: PointProperties = { size: 18, fillSelected: false, highlight: false }): void {
+  public draw(ctx2D: CanvasRenderingContext2D): void {
     super.draw(ctx2D);
 
-    const radius: number = (pointProperties.size ?? 18) / 2;
+    const props = this.props as PointProperties;
+    const radius: number = (props.size ?? 18) / 2;
 
     this.drawPoint(ctx2D, radius);
 
-    if (pointProperties.fillSelected ?? false) {
+    if (props.isFillSelected ?? false) {
       this.fillSelectedPoint(ctx2D, radius);
     }
 
-    if (pointProperties.highlight ?? false) {
+    if (props.isHighlight ?? false) {
       this.highlightPoint(ctx2D, radius);
     }
   }
@@ -52,6 +57,28 @@ export default class Point extends Shape {
   public isEqual(point: Point): boolean {
     return this.coordinate.x == point.coordinate.x &&
            this.coordinate.y == point.coordinate.y;
+  }
+
+  /** @inheritdoc */
+  public setShapeDrawProperties(props: PointProperties): void {
+    let properties = this.props as PointProperties;
+
+    properties.colour = props.colour ?? this.defaultColour;
+    properties.isFillSelected = props.isFillSelected ?? this.defaultIsFillSelected;
+    properties.isHighlight = props.isHighlight ?? this.defaultIsHighlight;
+    properties.size = props.size ?? this.defaultSize;
+    
+    this.props = properties;
+  }
+
+  /** @inheritdoc */
+  protected getDefaultShapeProperties(): PointProperties {
+    return {
+      colour: this.defaultColour,
+      isFillSelected: this.defaultIsFillSelected,
+      isHighlight: this.defaultIsHighlight,
+      size: this.defaultSize
+    }
   }
 
   /**
