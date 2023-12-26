@@ -11,6 +11,16 @@ export function add(p1: Point, p2: Point): Point {
 }
 
 /**
+ * Computes the angle between points.
+ * @param p1 First point.
+ * @param p2 Second point.
+ * @returns Angle between points.
+ */
+export function angle(point: Point): number {
+  return Math.atan2(point.coordinate.y, point.coordinate.x);
+}
+
+/**
  * Computes distance between 2 points.
  * @param p1 Point.
  * @param p2 Point.
@@ -62,4 +72,18 @@ export function scale(point: Point, scaler: number): Point {
  */
 export function subtract(p1: Point, p2: Point): Point {
   return new Point(p1.coordinate.x - p2.coordinate.x, p1.coordinate.y - p2.coordinate.y)
+}
+
+/**
+ * Translated point.
+ * @param p1 Point.
+ * @param angle Angle.
+ * @param offset Offset.
+ * @returns Translated point.
+ */
+export function translate(p1: Point, angle: number, offset: number): Point {
+  return new Point(
+    p1.coordinate.x + Math.cos(angle) * offset,
+    p1.coordinate.y + Math.sin(angle) * offset
+  );
 }

@@ -1,4 +1,5 @@
 import GraphEditor from "./Editor/GraphEditor.js";
+import Envelope from "./Primitives/Envelope.js";
 import Viewport from "./Editor/Viewport.js";
 import Graph from "./Math/Graph.js";
 import Point from "./Primitives/Point.js";
@@ -40,6 +41,7 @@ const graphEditor = new GraphEditor(viewport, graph);
 function animate() {
   viewport.display();
   graphEditor.display();
+  new Envelope(graph.edges[0], 80).draw(viewport.canvas.getContext('2d') as CanvasRenderingContext2D);
   requestAnimationFrame(animate);
 }
 
